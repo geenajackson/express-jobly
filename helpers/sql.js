@@ -2,6 +2,8 @@ const { BadRequestError } = require("../expressError");
 
 /** Allows for partial update of an existing value in the database.
  * 
+ * Takes a key to be updated in dataToUpdate and the format of what will be updated.
+ * 
  * Converts values from JSON to SQL and maps values into an entry.
  * 
  * Will reject empty requests.
