@@ -70,7 +70,7 @@ class Company {
                   num_employees AS "numEmployees",
                   logo_url AS "logoUrl"
            FROM companies
-           WHERE name LIKE {{'%' + nameLike + '%'}}
+           WHERE name LIKE {{'%' + %1 + '%'}}
            ORDER BY name`, [nameLike]);
       return companiesRes.rows;
     }
