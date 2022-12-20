@@ -49,31 +49,26 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  static async findAll(filters) {
-    if (Object.keys(filters).length === 0) {
-      const companiesRes = await db.query(
-        `SELECT handle,
+  static async findAll(filters = {}) {
+    const query = await db.query(
+      `SELECT handle,
                   name,
                   description,
                   num_employees AS "numEmployees",
                   logo_url AS "logoUrl"
-           FROM companies
-           ORDER BY name`);
-      return companiesRes.rows;
+           FROM companies`);
+
+    let expressions = [];
+    let queryVals = [];
+
+    const { minEmployees, maxEmployees, nameLike } = filters;
+
+    if (minEmployees > maxEmployees) {
+      throw new BadRequestError("maxEmployees must be greater than minEmployees");
     }
-    else {
-      const nameLike = filters.nameLike
-      const companiesRes = await db.query(
-        `SELECT handle,
-                  name,
-                  description,
-                  num_employees AS "numEmployees",
-                  logo_url AS "logoUrl"
-           FROM companies
-           WHERE name LIKE {{'%' + %1 + '%'}}
-           ORDER BY name`, [nameLike]);
-      return companiesRes.rows;
-    }
+
+    return query.rows;
+
   }
 
   /** Given a company handle, return data about company.
