@@ -154,50 +154,42 @@ describe("update", function () {
         });
     });
 
-    // test("works: null fields", async function () {
-    //     const updateDataSetNulls = {
-    //         name: "New",
-    //         description: "New Description",
-    //         numEmployees: null,
-    //         logoUrl: null,
-    //     };
+    test("works: null fields", async function () {
+        let job = await Job.create(newJob);
+        const updateDataSetNulls = {
+            title: "New",
+            salary: null,
+            equity: null
+        };
 
-    //     let company = await Company.update("c1", updateDataSetNulls);
-    //     expect(company).toEqual({
-    //         handle: "c1",
-    //         ...updateDataSetNulls,
-    //     });
+        let updateJob = await Job.update(job.id, updateDataSetNulls);
 
-    //     const result = await db.query(
-    //         `SELECT handle, name, description, num_employees, logo_url
-    //        FROM companies
-    //        WHERE handle = 'c1'`);
-    //     expect(result.rows).toEqual([{
-    //         handle: "c1",
-    //         name: "New",
-    //         description: "New Description",
-    //         num_employees: null,
-    //         logo_url: null,
-    //     }]);
-    // });
+        expect(updateJob).toEqual({
+            id: job.id,
+            companyHandle: "c1",
+            ...updateDataSetNulls,
+        });
+    });
 
-    // test("not found if no such company", async function () {
-    //     try {
-    //         await Company.update("nope", updateData);
-    //         fail();
-    //     } catch (err) {
-    //         expect(err instanceof NotFoundError).toBeTruthy();
-    //     }
-    // });
+    test("not found if no such job", async function () {
+        try {
+            await Job.update(0, updateData);
+            fail();
+        } catch (err) {
+            expect(err instanceof NotFoundError).toBeTruthy();
+        }
+    });
 
-    // test("bad request with no data", async function () {
-    //     try {
-    //         await Company.update("c1", {});
-    //         fail();
-    //     } catch (err) {
-    //         expect(err instanceof BadRequestError).toBeTruthy();
-    //     }
-    // });
+    test("bad request with no data", async function () {
+        try {
+            let job = await Job.create(newJob);
+
+            await Job.update(job.id, {});
+            fail();
+        } catch (err) {
+            expect(err instanceof BadRequestError).toBeTruthy();
+        }
+    });
 });
 
 // /************************************** remove */
