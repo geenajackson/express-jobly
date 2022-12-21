@@ -74,7 +74,7 @@ class Job {
         return job;
     }
 
-    /** Update company data with `data`.
+    /** Update job data with `data`.
      *
      * This is a "partial update" --- it's fine if data doesn't contain all the
      * fields; this only changes provided ones.
