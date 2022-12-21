@@ -46,17 +46,19 @@ class Company {
 
   /** Find all companies.
    *
+   * filters can include minEmployees, maxEmployees, nameLike
+   * 
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
   static async findAll(filters = {}) {
-    const query = await db.query(
+    let query =
       `SELECT handle,
                   name,
                   description,
                   num_employees AS "numEmployees",
                   logo_url AS "logoUrl"
-           FROM companies`);
+           FROM companies`;
 
     let expressions = [];
     let queryVals = [];
@@ -67,7 +69,34 @@ class Company {
       throw new BadRequestError("maxEmployees must be greater than minEmployees");
     }
 
-    return query.rows;
+    //for each search term, push filter into queryVals array to keep track of value and length
+
+    if (minEmployees !== undefined) {
+      queryVals.push(minEmployees);
+      expressions.push(`num_employees >= $${queryVals.length}`);
+    }
+
+    if (maxEmployees !== undefined) {
+      queryVals.push(maxEmployees);
+      expressions.push(`num_employees <= $${queryVals.length}`);
+    }
+
+    if (nameLike !== undefined) {
+      queryVals.push(nameLike);
+      expressions.push(`name ILIKE >= $${queryVals.length}`);
+    }
+
+    //check to see if filters are applied; if so, join together expressions
+
+    if (expressions.length > 0) {
+      query += " WHERE " + expressions.join(" AND ");
+    }
+
+    //put together the full query and return the result
+
+    query += " ORDER BY name";
+    const results = await db.query(query, queryVals);
+    return results.rows;
 
   }
 
