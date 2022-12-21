@@ -57,7 +57,7 @@ router.get("/", async function (req, res, next) {
     }
 });
 
-/** GET /[handle]  =>  { job }
+/** GET /[id]  =>  { job }
  *
  *  Job is { id, title, salary, equity, companyHandle }
  *
@@ -65,16 +65,16 @@ router.get("/", async function (req, res, next) {
  * Authorization required: none
  */
 
-router.get("/:handle", async function (req, res, next) {
+router.get("/:id", async function (req, res, next) {
     try {
-        const job = await Job.get(req.params.handle);
+        const job = await Job.get(req.params.id);
         return res.json({ job });
     } catch (err) {
         return next(err);
     }
 });
 
-/** PATCH /[handle] { fld1, fld2, ... } => { job }
+/** PATCH /[id] { fld1, fld2, ... } => { job }
  *
  * Patches job data.
  *
@@ -85,7 +85,7 @@ router.get("/:handle", async function (req, res, next) {
  * Authorization required: login, admin
  */
 
-router.patch("/:handle", ensureLoggedIn, isAdmin, async function (req, res, next) {
+router.patch("/:id", ensureLoggedIn, isAdmin, async function (req, res, next) {
     try {
         const validator = jsonschema.validate(req.body, jobUpdateSchema);
         if (!validator.valid) {
@@ -93,22 +93,22 @@ router.patch("/:handle", ensureLoggedIn, isAdmin, async function (req, res, next
             throw new BadRequestError(errs);
         }
 
-        const job = await Job.update(req.params.handle, req.body);
+        const job = await Job.update(req.params.id, req.body);
         return res.json({ job });
     } catch (err) {
         return next(err);
     }
 });
 
-/** DELETE /[handle]  =>  { deleted: handle }
+/** DELETE /[id]  =>  { deleted: id }
  *
  * Authorization: login, admin
  */
 
-router.delete("/:handle", ensureLoggedIn, isAdmin, async function (req, res, next) {
+router.delete("/:id", ensureLoggedIn, isAdmin, async function (req, res, next) {
     try {
-        await Job.remove(req.params.handle);
-        return res.json({ deleted: req.params.handle });
+        await Job.remove(req.params.id);
+        return res.json({ deleted: req.params.id });
     } catch (err) {
         return next(err);
     }
