@@ -194,20 +194,27 @@ describe("update", function () {
 
 // /************************************** remove */
 
-// describe("remove", function () {
-//     test("works", async function () {
-//         await Company.remove("c1");
-//         const res = await db.query(
-//             "SELECT handle FROM companies WHERE handle='c1'");
-//         expect(res.rows.length).toEqual(0);
-//     });
+describe("remove", function () {
+    const newJob = {
+        title: "new",
+        salary: 100000,
+        equity: "0",
+        companyHandle: "c1"
+    };
+    test("works", async function () {
+        let job = await Job.create(newJob);
+        await Job.remove(job.id);
+        const res = await db.query(
+            `SELECT title FROM jobs WHERE id = ${job.id}`);
+        expect(res.rows.length).toEqual(0);
+    });
 
-//     test("not found if no such company", async function () {
-//         try {
-//             await Company.remove("nope");
-//             fail();
-//         } catch (err) {
-//             expect(err instanceof NotFoundError).toBeTruthy();
-//         }
-//     });
-// });
+    test("not found if no such job", async function () {
+        try {
+            await Job.remove(0);
+            fail();
+        } catch (err) {
+            expect(err instanceof NotFoundError).toBeTruthy();
+        }
+    });
+});
