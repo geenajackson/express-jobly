@@ -142,6 +142,13 @@ class User {
     return user;
   }
 
+  /** Given a username and job ID, applies user to that job.
+   *
+   * Returns { jobId }
+   * 
+   * Throws NotFoundError if user or job not found.
+   **/
+
   static async apply(username, jobId) {
     const result = await db.query(
       `INSERT INTO applications
