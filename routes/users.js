@@ -43,6 +43,24 @@ router.post("/", ensureLoggedIn, isAdmin, async function (req, res, next) {
   }
 });
 
+/** POST / [username] /jobs/ [id]  => { applied: jobId }
+ *
+ * Allows a user or admin to apply to a job for a username.
+ *
+ * Returns the jobId of the job applied to.
+ *
+ * Authorization required: login and/or admin
+ **/
+
+router.post("/:username/jobs/:id", ensureLoggedIn, sameUserOrAdmin, async function (req, res, next) {
+  try {
+    const application = await User.apply(req.params.username, req.params.id);
+    return res.json({ applied: application });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 
 /** GET / => { users: [ {username, firstName, lastName, email }, ... ] }
  *
