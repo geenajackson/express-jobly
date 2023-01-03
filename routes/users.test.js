@@ -191,12 +191,14 @@ describe("GET /users/:username", function () {
       .get(`/users/u1`)
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual({
+      jobs: [],
       user: {
         username: "u1",
         firstName: "U1F",
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: false,
+        applications: []
       },
     });
   });
