@@ -89,7 +89,7 @@ router.get("/", ensureLoggedIn, isAdmin, async function (req, res, next) {
 router.get("/:username", ensureLoggedIn, async function (req, res, next) {
   try {
     const user = await User.get(req.params.username);
-    return res.json({ user });
+    return res.json({ user, jobs: user.applications });
   } catch (err) {
     return next(err);
   }
